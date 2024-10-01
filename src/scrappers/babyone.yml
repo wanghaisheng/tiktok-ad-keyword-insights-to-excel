@@ -1,0 +1,27 @@
+url: 
+  - https://www.babyone.de/*
+listElementsQuery: .product-box
+elementParser:
+  - title: Item brand
+    query: .product-brand
+    type: text
+  
+  - title: Item model
+    query: 'product-model'
+    type: text
+  
+  - title: Item Description
+    query: .product-name
+    type: text
+
+  - title: RRP
+    query: .list-price
+    type: text
+  
+  - title: Price
+    query: .sale-price
+    type: text
+
+  - title: URL
+    query: .product-link
+    type: link

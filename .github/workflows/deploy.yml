@@ -1,0 +1,62 @@
+name: Deploy to Google Store
+
+on: workflow_dispatch
+
+jobs:
+  test:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/install-dependencies
+        with:
+          node-auth-token: ${{ secrets.NODE_AUTH_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run E2E tests
+        run: node node_modules/puppeteer/install.mjs && npm run test:e2e
+
+  build-and-deploy-extension:
+    name: Build & deploy extension
+    needs: 
+      - test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v1
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/create-env-file
+        with:
+          rows-api-key: ${{ secrets.ROWS_API_KEY }}
+          spreadsheet-id: ${{ secrets.SPREADSHEET_ID }}
+          table-id: ${{ secrets.TABLE_ID }}
+          usage-table-id: ${{ secrets.USAGE_TABLE_ID }}
+      - uses: ./.github/actions/install-dependencies
+        with:
+          node-auth-token: ${{ secrets.NODE_AUTH_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build chrome extension dist files
+        run: |
+          npm run build
+          cd dist
+          zip -r ../chrome-extension-${{ github.sha }}.zip *
+      - name: Archive extension build
+        uses: actions/upload-artifact@v4
+        with:
+          name: extension-dist-content
+          path: dist
+      - name: Upload & release
+        uses: mnao305/chrome-extension-upload@v5.0.0
+        with:
+          file-path: ./chrome-extension-${{ github.sha }}.zip
+          extension-id: ${{ secrets.EXTENSION_ID }}
+          client-id: ${{ secrets.CLIENT_ID }}
+          client-secret: ${{ secrets.CLIENT_SECRET }}
+          refresh-token: ${{ secrets.REFRESH_TOKEN }}
+          publish: true

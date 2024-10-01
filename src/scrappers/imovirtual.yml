@@ -1,0 +1,22 @@
+url: https://www.imovirtual.com/*
+listElementsQuery: article
+elementParser:
+  - title: Home
+    query: '[data-testid="listing-item-link"]'
+    type: text
+
+  - title: Typology
+    query: '[data-testid="advert-card-specs-list"] > dl > dd:nth-child(2)'
+    type: text
+
+  - title: Area
+    query: '[data-testid="advert-card-specs-list"] > dl > dd:nth-child(4)'
+    type: text
+
+  - title: Price
+    query: '[data-testid="listing-item-header"] > span'
+    type: text
+
+  - title: URL
+    query: a
+    type: link

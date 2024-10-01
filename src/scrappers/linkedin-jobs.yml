@@ -1,0 +1,19 @@
+url: https://www.linkedin.com/jobs/search/*
+header: Linkedin jobs search results
+listElementsQuery: .jobs-search-results__list-item
+elementParser:
+  - title: Position
+    query: .job-card-container__link
+    type: text
+
+  - title: Company
+    query: .job-card-container__primary-description
+    type: text
+
+  - title: Location
+    query: .job-card-container__metadata-wrapper
+    type: text
+
+  - title: URL
+    query: .job-card-container__link
+    type: clean-url

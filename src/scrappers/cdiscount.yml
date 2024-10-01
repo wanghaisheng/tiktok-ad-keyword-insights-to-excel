@@ -1,0 +1,27 @@
+url: 
+  - https://www.cdiscount.com/*
+listElementsQuery: ul > li[data-sku]
+elementParser:
+  - title: Item brand
+    query: '.brand'
+    type: text
+
+  - title: Item model
+    query: '.model'
+    type: text
+
+  - title: Item Description
+    query: h2
+    type: text
+  
+  - title: RRP
+    query: '.c-price-s > s'
+    type: text
+  
+  - title: Price
+    query: .prdtBILPrice > .price
+    type: text
+
+  - title: URL
+    query: a
+    type: link
